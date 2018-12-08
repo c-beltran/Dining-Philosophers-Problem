@@ -2,10 +2,19 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+/**
+ * This class monitors the threads between philosophers
+ * Implements DiningServer interface
+ * Contains important functions such as when
+ * a philosopher pick up and returns chop sticks
+ * @author Carlos
+ *
+ */
 public class Monitor implements DiningServer {
 	
 	private int numOfPhil;
 	enum State { THINKING, HUNGRY, EATING };
+	//lock is used to achieve synchronization
 	final Lock lock;
 	State[] states;
 	Condition[] self;
@@ -14,13 +23,15 @@ public class Monitor implements DiningServer {
 		this.numOfPhil = philNum;
 		 states = new State[philNum];
 		 self = new Condition[philNum];
+		 
+		 //ReentrantLock class implements the Lock interface and 
+		 //provides synchronization to methods while accessing shared resources
 		 lock = new ReentrantLock();
 		 
 		 //initializing state and cond for philosophers
 		for (int i = 0; i < states.length; i++){
 			states[i] = State.THINKING;
 			self[i] = lock.newCondition();
-//			System.out.println("starting.. " + states[i]);
 		}
 	 }
 	
@@ -35,21 +46,17 @@ public class Monitor implements DiningServer {
 			checkForAvailability(philNumber);
 			
 			if (states[philNumber] != State.EATING){
-				
 					//if im unable to eat, i wait for signal
 					System.out.println("Philosopher "+philNumber+" is thinking...");
 					self[philNumber].await();
 					//eat after waiting for some time
 					checkForAvailability(philNumber);
 			}
-			} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-//			System.out.println("getting stuck here take-chop "+philNumber);
+		} catch (InterruptedException e) {
 			e.printStackTrace();
 		} 
 		finally {
 			lock.unlock();
-			
 		}
 	}
 
@@ -58,19 +65,15 @@ public class Monitor implements DiningServer {
 		lock.lock();
 		try{
 			System.out.println("Philosopher "+philNumber+" released its left and right chopsticks.");
-			
 			states[philNumber] = State.THINKING;
 			 // test left and right philosophers
 			
 			 checkForAvailability((philNumber + 4) % 5);
-	
 			 checkForAvailability((philNumber + 1) % 5);
 		}
 		finally{
-//			System.out.println("getting stuck here return-chop "+philNumber);
 			lock.unlock();
 		}
-		
 	}
 	
 	private void checkForAvailability(int philNumber){

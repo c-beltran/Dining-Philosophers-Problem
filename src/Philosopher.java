@@ -1,32 +1,31 @@
 
 public class Philosopher implements Runnable{
 	
-	public int myId;
-	private int timesToEat;		// Times to eat.
-	private Monitor mon;
+	//initializing variables
+	public int phil_Id;
+//	private int eatingTime;
 	public static Thread thread;	
-	private int sleepLength;		// How long to sleep during eating.
+	private Monitor mon;
+	private int sleepLength;	
+	
 	// Constructor.
-	Philosopher(int id, int numToEat, Monitor m){
-		this.myId = id;
-		this.timesToEat = numToEat;
+	Philosopher(int id, Monitor m){
+		this.phil_Id = id;
+//		this.eatingTime = numToEat;
 		this.mon = m;
-		sleepLength = 10;			// Make a pause of 10 ms while eating.
+		sleepLength = 10;
 		thread = new Thread(this);
 		thread.start();
 	}
 	
-	@Override
 	public void run() {
 		// TODO Auto-generated method stub
 		int count = 0;
-		while(count <= timesToEat){
-			mon.takeChopsticks(myId);
-			Utility.nap(myId, sleepLength);
-			mon.returnChopsticks(myId);
+		while(count <= 5){
+			mon.takeChopsticks(phil_Id);
+			SleepUtilities.nap(phil_Id, sleepLength);
+			mon.returnChopsticks(phil_Id);
 			++count;
 		}
-	}
-
-	
+	}	
 }
