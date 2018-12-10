@@ -1,30 +1,38 @@
-
+/**
+ * implements Runnable
+ * philosophers get defined and threads are created
+ * also contains the run function
+ * @author Carlos
+ *
+ */
 public class Philosopher implements Runnable{
 	
 	//initializing variables
 	public int phil_Id;
-//	private int eatingTime;
 	public static Thread thread;	
-	private Monitor mon;
+	private Monitor monitor;
 	private int sleepLength;	
 	
 	// Constructor.
-	Philosopher(int id, Monitor m){
+	Philosopher(int id, Monitor mon){
 		this.phil_Id = id;
-//		this.eatingTime = numToEat;
-		this.mon = m;
-		sleepLength = 10;
+		this.monitor = mon;
+		sleepLength = 5;
 		thread = new Thread(this);
 		thread.start();
 	}
 	
+	/**
+	 * run function acquired from
+	 * Runnable interface
+	 */
 	public void run() {
 		// TODO Auto-generated method stub
 		int count = 0;
 		while(count <= 5){
-			mon.takeChopsticks(phil_Id);
-			SleepUtilities.nap(phil_Id, sleepLength);
-			mon.returnChopsticks(phil_Id);
+			monitor.takeChopsticks(phil_Id);
+			SleepUtilities.eats(phil_Id, sleepLength);
+			monitor.returnChopsticks(phil_Id);
 			++count;
 		}
 	}	

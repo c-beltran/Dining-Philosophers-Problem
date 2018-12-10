@@ -6,7 +6,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * This class monitors the threads between philosophers
  * Implements DiningServer interface
  * Contains important functions such as when
- * a philosopher pick up and returns chop sticks
+ * a philosopher picks up and returns chop sticks
  * @author Carlos
  *
  */
@@ -19,6 +19,7 @@ public class Monitor implements DiningServer {
 	State[] states;
 	Condition[] self;
 
+	//constructor
 	public Monitor(int philNum){
 		this.numOfPhil = philNum;
 		 states = new State[philNum];
@@ -35,7 +36,10 @@ public class Monitor implements DiningServer {
 		}
 	 }
 	
-	//pickup chopsticks
+	/*
+	 * pickup chopsticks
+	 * @see DiningServer#takeChopsticks(int)
+	 */
 	public void takeChopsticks(int philNumber) {
 		lock.lock();
 		try {
@@ -60,7 +64,9 @@ public class Monitor implements DiningServer {
 		}
 	}
 
-	//put down chopsticks
+	/**
+	 * philosopher returning chopsticks
+	 */
 	public void returnChopsticks(int philNumber) {
 		lock.lock();
 		try{
@@ -76,6 +82,11 @@ public class Monitor implements DiningServer {
 		}
 	}
 	
+	/**
+	 * checks if the other philosophers are eating
+	 * If not the 'philNumber' eats
+	 * @param philNumber
+	 */
 	private void checkForAvailability(int philNumber){
 		if ((states[(philNumber + 4) % 5] != State.EATING) && 
 				(states[philNumber] == State.HUNGRY) && 
